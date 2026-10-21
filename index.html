@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=1440, initial-scale=0.3">
-    <title>EnriProd Studio - Ultimate Pro Desktop DAW</title>
+    <title>EnriProd Studio - Ultimate Pro DAW & Music Player</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -162,16 +162,16 @@
         .step-pad.current { border: 2px solid var(--accent-pink); }
 
         /* MIXER RACK */
-        .mixer-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; height: 160px; background: #080c14; padding: 10px; border-radius: 6px; border: 1px solid #1a2336; }
+        .mixer-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; height: 140px; background: #080c14; padding: 10px; border-radius: 6px; border: 1px solid #1a2336; }
         .mixer-channel { display: flex; flex-direction: column; align-items: center; gap: 6px; background: #0f1624; border: 1px solid #1c273e; padding: 6px; border-radius: 4px; }
         .channel-title { font-size: 0.65rem; font-weight: 900; color: var(--accent-cyan); }
-        .fader-wrapper { display: flex; align-items: center; gap: 8px; height: 100px; }
-        input[type=range].fader { writing-mode: bt-linear; -webkit-appearance: slider-vertical; width: 12px; height: 90px; accent-color: var(--accent-cyan); }
-        .meter { width: 6px; height: 90px; background: #1a2336; border-radius: 3px; position: relative; overflow: hidden; }
+        .fader-wrapper { display: flex; align-items: center; gap: 8px; height: 80px; }
+        input[type=range].fader { writing-mode: bt-linear; -webkit-appearance: slider-vertical; width: 12px; height: 75px; accent-color: var(--accent-cyan); }
+        .meter { width: 6px; height: 75px; background: #1a2336; border-radius: 3px; position: relative; overflow: hidden; }
         .meter-fill { position: absolute; bottom: 0; width: 100%; height: 0%; background: linear-gradient(to top, var(--accent-green), var(--accent-orange), var(--accent-pink)); transition: height 0.05s; }
 
         /* PIANO KEYBOARD */
-        .keyboard-wrapper { display: flex; height: 130px; position: relative; background: #000; border-radius: 6px; overflow: hidden; border: 2px solid #1a2336; }
+        .keyboard-wrapper { display: flex; height: 110px; position: relative; background: #000; border-radius: 6px; overflow: hidden; border: 2px solid #1a2336; }
         .key { flex: 1; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 0 0 4px 4px; cursor: pointer; position: relative; z-index: 1; }
         .key.active, .key:active { background: var(--accent-cyan); }
         .key.black { background: #0f172a; height: 60%; width: 3.2%; position: absolute; z-index: 2; margin-left: -1.6%; border-radius: 0 0 4px 4px; border: 1px solid #334155; }
@@ -197,14 +197,23 @@
         .mpc-pad:hover { border-color: var(--accent-cyan); color: #fff; }
         .mpc-pad:active, .mpc-pad.hit { background: var(--accent-pink); color: #fff; box-shadow: 0 0 15px var(--accent-pink); transform: scale(0.96); }
 
-        /* VISUALIZER */
-        .vis-box { height: 90px; background: #04060a; border-radius: 6px; border: 1px solid #1a2336; overflow: hidden; }
-        canvas { width: 100%; height: 100%; }
+        /* MUSIC PLAYER STYLES */
+        .player-card { background: #090d16; border: 1px solid #1a2336; border-radius: 6px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+        .track-info-display { display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; font-weight: 800; color: var(--accent-cyan); }
+        .playlist { max-height: 100px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; }
+        .playlist-item { background: #121824; border: 1px solid #1e293b; padding: 6px 10px; border-radius: 4px; font-size: 0.75rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
+        .playlist-item:hover { border-color: var(--accent-cyan); color: var(--accent-cyan); }
+        .playlist-item.playing { border-color: var(--accent-pink); color: var(--accent-pink); background: #1a1020; }
+        .player-controls { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 4px; }
+        .p-btn { background: #182235; border: 1px solid #2a3a5c; color: #fff; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.75rem; }
+        .p-btn:hover { background: var(--accent-cyan); color: #000; }
 
-        /* FX RACK */
+        /* VISUALIZER & FX */
+        .vis-box { height: 75px; background: #04060a; border-radius: 6px; border: 1px solid #1a2336; overflow: hidden; }
+        canvas { width: 100%; height: 100%; }
         .fx-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-        .fx-card { background: #090d16; border: 1px solid #1a2336; padding: 8px 10px; border-radius: 4px; display: flex; flex-direction: column; gap: 4px; }
-        .fx-card label { font-size: 0.65rem; font-weight: 800; color: var(--text-muted); display: flex; justify-content: space-between; }
+        .fx-card { background: #090d16; border: 1px solid #1a2336; padding: 6px 8px; border-radius: 4px; display: flex; flex-direction: column; gap: 4px; }
+        .fx-card label { font-size: 0.6rem; font-weight: 800; color: var(--text-muted); display: flex; justify-content: space-between; }
         input[type=range] { accent-color: var(--accent-cyan); cursor: pointer; }
     </style>
 </head>
@@ -215,7 +224,7 @@
         <div class="brand"><i class="fa-solid fa-compact-disc"></i> Enri<span>Prod</span> Studio Pro DAW</div>
         
         <div class="transport-controls">
-            <button class="btn btn-play" id="playBtn"><i class="fa-solid fa-play"></i> PLAY</button>
+            <button class="btn btn-play" id="playBtn"><i class="fa-solid fa-play"></i> PLAY DAW</button>
             <button class="btn" id="clearBtn"><i class="fa-solid fa-trash-can"></i> CLEAR</button>
             
             <div class="lcd-display">
@@ -239,24 +248,42 @@
             </div>
             <div class="sequencer-container" id="sequencer"></div>
 
-            <div class="panel-header" style="margin-top: 8px;">
+            <div class="panel-header" style="margin-top: 4px;">
                 <span><i class="fa-solid fa-list-check"></i> Master Multi-Channel Mixer</span>
             </div>
             <div class="mixer-grid" id="mixer"></div>
 
-            <div class="panel-header" style="margin-top: 8px;">
+            <div class="panel-header" style="margin-top: 4px;">
                 <span><i class="fa-solid fa-keyboard"></i> Synthesizer Keyboard (2 Octaves Full)</span>
             </div>
             <div class="keyboard-wrapper" id="keyboard"></div>
         </section>
 
-        <!-- RIGHT COLUMN -->
+        <!-- RIGHT COLUMN: VISUALIZER, PADS, MUSIC PLAYER & FX -->
         <section class="panel">
             <div class="panel-header">
                 <span><i class="fa-solid fa-wave-square"></i> Oscilloscope Frequency Spectrum</span>
             </div>
             <div class="vis-box">
                 <canvas id="visCanvas"></canvas>
+            </div>
+
+            <!-- MUSIC PLAYER SECTION -->
+            <div class="panel-header">
+                <span><i class="fa-solid fa-music"></i> EnriProd Music Showcase Player</span>
+            </div>
+            <div class="player-card">
+                <div class="track-info-display">
+                    <span id="currentTrackTitle">🎵 Đang chọn: EnriProd Trap Beat #1</span>
+                    <span id="playerStatus">STOPPED</span>
+                </div>
+                <audio id="audioElement"></audio>
+                <div class="playlist" id="playlistContainer"></div>
+                <div class="player-controls">
+                    <button class="p-btn" id="prevTrackBtn"><i class="fa-solid fa-backward"></i> Prev</button>
+                    <button class="p-btn" id="audioPlayBtn" style="background: var(--accent-cyan); color: #000;"><i class="fa-solid fa-play"></i> Play Song</button>
+                    <button class="p-btn" id="nextTrackBtn">Next <i class="fa-solid fa-forward"></i></button>
+                </div>
             </div>
 
             <div class="panel-header">
@@ -276,23 +303,14 @@
                     <label>REVERB DECAY <span id="verbVal">1.8s</span></label>
                     <input type="range" id="reverb" min="0.1" max="6" step="0.1" value="1.8">
                 </div>
-                <div class="fx-card">
-                    <label>DISTORTION DRIVE <span id="distVal">0.0</span></label>
-                    <input type="range" id="dist" min="0" max="0.8" step="0.05" value="0">
-                </div>
-                <div class="fx-card">
-                    <label>MASTER VOLUME <span id="volVal">0dB</span></label>
-                    <input type="range" id="masterVol" min="-30" max="6" value="0">
-                </div>
             </div>
         </section>
     </main>
 
     <script>
-        // Audio Engine Setup
+        // Audio Engine Setup for DAW
         const filter = new Tone.Filter(3000, "lowpass").toDestination();
         const reverb = new Tone.Reverb(1.8).connect(filter);
-        const dist = new Tone.Distortion(0).connect(reverb);
 
         const synths = {
             Kick: new Tone.MembraneSynth().connect(filter),
@@ -300,7 +318,7 @@
             HiHat: new Tone.MetalSynth({ frequency: 250, envelope: { attack: 0.001, decay: 0.05, release: 0.05 }, harmonicity: 5.1 }).connect(filter),
             Clap: new Tone.NoiseSynth({ noise: { type: 'pink' }, envelope: { attack: 0.001, decay: 0.15, sustain: 0 } }).connect(filter),
             Bass: new Tone.MonoSynth({ oscillator: { type: "sawtooth" } }).connect(filter),
-            Lead: new Tone.PolySynth(Tone.Synth).connect(dist)
+            Lead: new Tone.PolySynth(Tone.Synth).connect(reverb)
         };
 
         const tracks = ['Kick', 'Snare', 'HiHat', 'Clap', 'Bass', 'Lead'];
@@ -367,7 +385,7 @@
 
                     const m = document.getElementById(`m-${track}`);
                     if (m) {
-                        m.style.height = '90%';
+                        m.style.height = '85%';
                         setTimeout(() => m.style.height = '0%', 100);
                     }
                 }
@@ -375,21 +393,79 @@
             currentStep = (currentStep + 1) % 16;
         }, '16n');
 
-        // Play/Stop Control
+        // Play/Stop DAW Control
         document.getElementById('playBtn').onclick = async () => {
             await Tone.start();
             if (isPlaying) {
                 Tone.Transport.stop();
-                document.getElementById('playBtn').innerHTML = '<i class="fa-solid fa-play"></i> PLAY';
+                document.getElementById('playBtn').innerHTML = '<i class="fa-solid fa-play"></i> PLAY DAW';
                 document.getElementById('playBtn').classList.remove('playing');
             } else {
                 Tone.Transport.bpm.value = document.getElementById('bpm').value;
                 Tone.Transport.start();
-                document.getElementById('playBtn').innerHTML = '<i class="fa-solid fa-stop"></i> STOP';
+                document.getElementById('playBtn').innerHTML = '<i class="fa-solid fa-stop"></i> STOP DAW';
                 document.getElementById('playBtn').classList.add('playing');
             }
             isPlaying = !isPlaying;
         };
+
+        // --- MUSIC PLAYER LOGIC ---
+        const playlist = [
+            { title: "🔥 EnriProd - Cyberpunk Trap Beat 2026", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
+            { title: "⚡ EnriProd - Chill LoFi Study Session", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
+            { title: "🚀 EnriProd - Heavy 808 Drill Anthem", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" }
+        ];
+        let currentTrackIdx = 0;
+        const audioEl = document.getElementById('audioElement');
+        const playlistEl = document.getElementById('playlistContainer');
+
+        function loadPlaylistUI() {
+            playlistEl.innerHTML = '';
+            playlist.forEach((song, idx) => {
+                const item = document.createElement('div');
+                item.className = `playlist-item ${idx === currentTrackIdx ? 'playing' : ''}`;
+                item.innerHTML = `<span><i class="fa-solid fa-headphones"></i> ${song.title}</span> <i class="fa-solid fa-play"></i>`;
+                item.onclick = () => {
+                    currentTrackIdx = idx;
+                    playSelectedTrack();
+                };
+                playlistEl.appendChild(item);
+            });
+        }
+
+        function playSelectedTrack() {
+            audioEl.src = playlist[currentTrackIdx].src;
+            audioEl.play();
+            document.getElementById('currentTrackTitle').innerText = `🎵 Đang phát: ${playlist[currentTrackIdx].title}`;
+            document.getElementById('playerStatus').innerText = "PLAYING";
+            document.getElementById('audioPlayBtn').innerHTML = '<i class="fa-solid fa-pause"></i> Pause';
+            loadPlaylistUI();
+        }
+
+        document.getElementById('audioPlayBtn').onclick = () => {
+            if (audioEl.paused) {
+                if(!audioEl.src) audioEl.src = playlist[currentTrackIdx].src;
+                audioEl.play();
+                document.getElementById('playerStatus').innerText = "PLAYING";
+                document.getElementById('audioPlayBtn').innerHTML = '<i class="fa-solid fa-pause"></i> Pause';
+            } else {
+                audioEl.pause();
+                document.getElementById('playerStatus').innerText = "PAUSED";
+                document.getElementById('audioPlayBtn').innerHTML = '<i class="fa-solid fa-play"></i> Play Song';
+            }
+        };
+
+        document.getElementById('nextTrackBtn').onclick = () => {
+            currentTrackIdx = (currentTrackIdx + 1) % playlist.length;
+            playSelectedTrack();
+        };
+
+        document.getElementById('prevTrackBtn').onclick = () => {
+            currentTrackIdx = (currentTrackIdx - 1 + playlist.length) % playlist.length;
+            playSelectedTrack();
+        };
+
+        loadPlaylistUI();
 
         // Render MPC Pads (16 Pads)
         const padNames = ['KICK', 'SNARE', 'HIHAT', 'CLAP', 'PERC 1', 'PERC 2', 'BASS 1', 'BASS 2', 'SYNTH 1', 'SYNTH 2', 'LEAD 1', 'LEAD 2', 'VOX 1', 'VOX 2', 'FX 1', 'FX 2'];
@@ -450,10 +526,6 @@
             reverb.decay = e.target.value;
             document.getElementById('verbVal').innerText = e.target.value + 's';
         };
-        document.getElementById('dist').oninput = (e) => {
-            dist.distortion = e.target.value;
-            document.getElementById('distVal').innerText = e.target.value;
-        };
 
         document.getElementById('clearBtn').onclick = () => {
             for (let r = 0; r < 6; r++) grid[r].fill(false);
@@ -468,12 +540,12 @@
             ctx.fillStyle = '#04060a';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.lineWidth = 2;
-            ctx.strokeStyle = isPlaying ? '#00f2fe' : '#1a2336';
+            ctx.strokeStyle = (isPlaying || !audioEl.paused) ? '#00f2fe' : '#1a2336';
             ctx.beginPath();
             const slices = 32;
             const w = canvas.width / slices;
             for (let i = 0; i < slices; i++) {
-                const h = isPlaying ? (Math.random() * 0.8 + 0.1) * canvas.height : canvas.height / 2;
+                const h = ((isPlaying || !audioEl.paused) ? (Math.random() * 0.8 + 0.1) : 0.5) * canvas.height;
                 if (i === 0) ctx.moveTo(0, h);
                 else ctx.lineTo(i * w, h);
             }
