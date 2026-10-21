@@ -3,25 +3,171 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EnriProd - Beat Maker & DAW</title>
+    <title>EnriProd Studio - Beat Maker & DAW</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { margin: 0; background: #0f172a; color: #fff; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
-        h1 { color: #38bdf8; margin-bottom: 10px; }
-        .btn { background: #0284c7; color: white; border: none; padding: 12px 24px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; }
-        .btn:active { background: #0369a1; }
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+        body { background-color: #0d0f12; color: #e2e8f0; font-family: 'Segoe UI', Roboto, sans-serif; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+        header { background: #161920; border-bottom: 1px solid #2a2e3d; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: 800; color: #38bdf8; display: flex; align-items: center; gap: 10px; }
+        .logo span { color: #f43f5e; }
+        .controls { display: flex; align-items: center; gap: 16px; }
+        .btn { background: #2563eb; color: #fff; border: none; padding: 8px 18px; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; }
+        .btn:hover { background: #1d4ed8; }
+        .btn-danger { background: #e11d48; }
+        .btn-danger:hover { background: #be123c; }
+        .tempo-container { display: flex; align-items: center; gap: 10px; background: #1e2330; padding: 6px 12px; border-radius: 6px; }
+        input[type=number] { background: #0d0f12; border: 1px solid #3b4252; color: #38bdf8; padding: 4px 8px; border-radius: 4px; width: 60px; text-align: center; font-weight: bold; }
+        main { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; padding: 16px; flex-grow: 1; }
+        .panel { background: #161920; border-radius: 10px; border: 1px solid #2a2e3d; padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+        .panel-title { font-size: 1.1rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; display: flex; justify-content: space-between; align-items: center; }
+        .sequencer-grid { display: flex; flex-direction: column; gap: 10px; }
+        .track { display: grid; grid-template-columns: 100px repeat(16, 1fr); gap: 6px; align-items: center; }
+        .track-label { font-size: 0.85rem; font-weight: 600; color: #cbd5e1; }
+        .step { aspect-ratio: 1; background: #242b3b; border-radius: 4px; cursor: pointer; transition: 0.1s; }
+        .step.active { background: #38bdf8; box-shadow: 0 0 10px rgba(56, 189, 248, 0.5); }
+        .step.current { border: 2px solid #f43f5e; }
+        .pads-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .pad { aspect-ratio: 1; background: #1e2433; border: 2px solid #2e384d; border-radius: 8px; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; font-weight: 700; color: #94a3b8; transition: 0.1s; }
+        .pad:active, .pad.hit { background: #f43f5e; color: #fff; border-color: #fda4af; transform: scale(0.96); }
+        .piano-keys { display: flex; height: 120px; position: relative; background: #000; border-radius: 6px; overflow: hidden; }
+        .key { flex: 1; background: #fff; border: 1px solid #ccc; border-radius: 0 0 4px 4px; cursor: pointer; position: relative; z-index: 1; }
+        .key.active { background: #cbd5e1; }
+        .key.black { background: #1e293b; height: 60%; width: 6%; position: absolute; z-index: 2; margin-left: -3%; border-radius: 0 0 3px 3px; }
+        .key.black.active { background: #38bdf8; }
+        .visualizer-container { height: 80px; width: 100%; background: #0d0f12; border-radius: 6px; overflow: hidden; }
+        canvas { width: 100%; height: 100%; }
     </style>
 </head>
 <body>
-    <h1>EnriProd Studio</h1>
-    <p>Trang tạo beat nhạc trực tuyến</p>
-    <button class="btn" onclick="playMusic()">PHÁT ÂM THANH MẪU</button>
+    <header>
+        <div class="logo"><i class="fa-solid fa-compact-disc"></i> Enri<span>Prod</span> Studio</div>
+        <div class="controls">
+            <div class="tempo-container">
+                <label for="bpm">BPM</label>
+                <input type="number" id="bpm" value="120" min="60" max="200">
+            </div>
+            <button class="btn" id="playBtn"><i class="fa-solid fa-play"></i> PLAY</button>
+            <button class="btn btn-danger" id="clearBtn"><i class="fa-solid fa-trash"></i> CLEAR</button>
+        </div>
+    </header>
+
+    <main>
+        <section class="panel">
+            <div class="panel-title">16-Step Sequencer</div>
+            <div class="sequencer-grid" id="sequencer"></div>
+            
+            <div class="panel-title" style="margin-top: 20px;">Synthesizer Keyboard</div>
+            <div class="piano-keys" id="piano"></div>
+        </section>
+
+        <section class="panel">
+            <div class="panel-title">Visualizer</div>
+            <div class="visualizer-container">
+                <canvas id="visualizer"></canvas>
+            </div>
+
+            <div class="panel-title" style="margin-top: 10px;">MPC Drum Pads</div>
+            <div class="pads-grid" id="pads"></div>
+        </section>
+    </main>
+
     <script>
-        function playMusic() {
-            const synth = new Tone.Synth().toDestination();
-            Tone.start();
-            synth.triggerAttackRelease("C4", "8n");
-        }
+        const synths = {
+            Kick: new Tone.MembraneSynth().toDestination(),
+            Snare: new Tone.NoiseSynth({ noise: { type: 'white' }, envelope: { attack: 0.005, decay: 0.1, sustain: 0 } }).toDestination(),
+            HiHat: new Tone.MetalSynth({ frequency: 200, envelope: { attack: 0.001, decay: 0.05, release: 0.05 }, harmonicity: 5.1, modulationIndex: 32, resonance: 4000, octaves: 1.5 }).toDestination(),
+            Clap: new Tone.NoiseSynth({ noise: { type: 'pink' }, envelope: { attack: 0.001, decay: 0.2, sustain: 0 } }).toDestination(),
+            Synth: new Tone.PolySynth(Tone.Synth).toDestination()
+        };
+
+        const tracks = ['Kick', 'Snare', 'HiHat', 'Clap'];
+        const grid = Array(4).fill(null).map(() => Array(16).fill(false));
+        let isPlaying = false;
+        let currentStep = 0;
+
+        // Render Sequencer
+        const seqContainer = document.getElementById('sequencer');
+        tracks.forEach((track, tIdx) => {
+            const trackEl = document.createElement('div');
+            trackEl.className = 'track';
+            trackEl.innerHTML = `<div class="track-label">${track}</div>`;
+            for (let sIdx = 0; sIdx < 16; sIdx++) {
+                const step = document.createElement('div');
+                step.className = 'step';
+                step.onclick = () => {
+                    grid[tIdx][sIdx] = !grid[tIdx][sIdx];
+                    step.classList.toggle('active', grid[tIdx][sIdx]);
+                };
+                trackEl.appendChild(step);
+            }
+            seqContainer.appendChild(trackEl);
+        });
+
+        // Loop Sequencer
+        Tone.Transport.scheduleRepeat((time) => {
+            const steps = document.querySelectorAll('.step');
+            steps.forEach((s, idx) => {
+                if (idx % 16 === currentStep) s.classList.add('current');
+                else s.classList.remove('current');
+            });
+
+            tracks.forEach((track, tIdx) => {
+                if (grid[tIdx][currentStep]) {
+                    if (track === 'Kick') synths.Kick.triggerAttackRelease('C1', '8n', time);
+                    if (track === 'Snare') synths.Snare.triggerAttackRelease('8n', time);
+                    if (track === 'HiHat') synths.HiHat.triggerAttackRelease('32n', time);
+                    if (track === 'Clap') synths.Clap.triggerAttackRelease('8n', time);
+                }
+            });
+            currentStep = (currentStep + 1) % 16;
+        }, '16n');
+
+        // Play/Stop
+        document.getElementById('playBtn').onclick = async () => {
+            await Tone.start();
+            if (isPlaying) {
+                Tone.Transport.stop();
+                document.getElementById('playBtn').innerHTML = '<i class="fa-solid fa-play"></i> PLAY';
+            } else {
+                Tone.Transport.bpm.value = document.getElementById('bpm').value;
+                Tone.Transport.start();
+                document.getElementById('playBtn').innerHTML = '<i class="fa-solid fa-stop"></i> STOP';
+            }
+            isPlaying = !isPlaying;
+        };
+
+        // Render Drum Pads
+        const padNames = ['KICK', 'SNARE', 'HIHAT', 'CLAP', 'PERC 1', 'PERC 2', 'BASS', 'HIT'];
+        const padsContainer = document.getElementById('pads');
+        padNames.forEach((name, i) => {
+            const pad = document.createElement('div');
+            pad.className = 'pad';
+            pad.innerText = name;
+            pad.onclick = async () => {
+                await Tone.start();
+                pad.classList.add('hit');
+                setTimeout(() => pad.classList.remove('hit'), 100);
+                if (i === 0) synths.Kick.triggerAttackRelease('C1', '8n');
+                else if (i === 1) synths.Snare.triggerAttackRelease('8n');
+                else if (i === 2) synths.HiHat.triggerAttackRelease('32n');
+                else if (i === 3) synths.Clap.triggerAttackRelease('8n');
+                else synths.Synth.triggerAttackRelease(['C3', 'E3', 'G3', 'B3'][i % 4], '8n');
+            };
+            padsContainer.appendChild(pad);
+        });
+
+        // Clear
+        document.getElementById('clearBtn').onclick = () => {
+            for (let r = 0; r < 4; r++) grid[r].fill(false);
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+        };
+
+        // BPM Change
+        document.getElementById('bpm').onchange = (e) => {
+            Tone.Transport.bpm.value = e.target.value;
+        };
     </script>
 </body>
 </html>
