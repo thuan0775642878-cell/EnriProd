@@ -297,3 +297,62 @@
             pad.innerText = name;
             pad.onclick = async () => {
                 await Tone.start();
+                initAudio();
+                pad.classList.add('hit');
+                setTimeout(() => pad.classList.remove('hit'), 120);
+                if (i === 0) synths.Kick.triggerAttackRelease('C1', '8n');
+                else if (i === 1) synths.Snare.triggerAttackRelease('8n');
+                else if (i === 2) synths.HiHat.triggerAttackRelease('32n');
+                else if (i === 3) synths.Clap.triggerAttackRelease('8n');
+                else synths.Synth.triggerAttackRelease(['C3', 'E3', 'G3', 'B3'][i % 4], '8n');
+            };
+            padsContainer.appendChild(pad);
+        });
+
+        // Render Piano Keyboard
+        const kbContainer = document.getElementById('keyboard');
+        const notes = ['C3', 'C#3', 'D3', 'D#3', 'E3', 'F3', 'F#3', 'G3', 'G#3', 'A3', 'A#3', 'B3', 'C4'];
+        notes.forEach((note) => {
+            const key = document.createElement('div');
+            const isBlack = note.includes('#');
+            key.className = `key ${isBlack ? 'black' : ''}`;
+            key.innerText = isBlack ? '' : note;
+            key.onclick = async () => {
+                await Tone.start();
+                initAudio();
+                key.classList.add('active');
+                setTimeout(() => key.classList.remove('active'), 150);
+                synths.Synth.triggerAttackRelease(note, '8n');
+            };
+            kbContainer.appendChild(key);
+        });
+
+        // Clear
+        document.getElementById('clearBtn').onclick = () => {
+            for (let r = 0; r < 4; r++) grid[r].fill(false);
+            document.querySelectorAll('.step-pad').forEach(s => s.classList.remove('active'));
+        };
+
+        // Visualizer Canvas
+        const canvas = document.getElementById('visCanvas');
+        const ctx = canvas.getContext('2d');
+        function drawVis() {
+            requestAnimationFrame(drawVis);
+            ctx.fillStyle = '#05070a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = isPlaying ? '#00f2fe' : '#1e293b';
+            ctx.beginPath();
+            const slices = 20;
+            const w = canvas.width / slices;
+            for (let i = 0; i < slices; i++) {
+                const h = isPlaying ? (Math.random() * 0.6 + 0.2) * canvas.height : canvas.height / 2;
+                if (i === 0) ctx.moveTo(0, h);
+                else ctx.lineTo(i * w, h);
+            }
+            ctx.stroke();
+        }
+        drawVis();
+    </script>
+</body>
+</html>
