@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EnriProd - Beat Maker & DAW</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <style>
+        body { margin: 0; background: #0f172a; color: #fff; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
+        h1 { color: #38bdf8; margin-bottom: 10px; }
+        .btn { background: #0284c7; color: white; border: none; padding: 12px 24px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; }
+        .btn:active { background: #0369a1; }
+    </style>
+</head>
+<body>
+    <h1>EnriProd Studio</h1>
+    <p>Trang tạo beat nhạc trực tuyến</p>
+    <button class="btn" onclick="playMusic()">PHÁT ÂM THANH MẪU</button>
+    <script>
+        function playMusic() {
+            const synth = new Tone.Synth().toDestination();
+            Tone.start();
+            synth.triggerAttackRelease("C4", "8n");
+        }
+    </script>
+</body>
+</html>
