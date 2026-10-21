@@ -2,11 +2,9 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=1280, initial-scale=1.0">
-    <title>EnriProd Studio - Professional Desktop DAW</title>
-    <!-- Tone.js Audio Engine -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EnriProd Studio - DAW Beat Maker Pro</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
-    <!-- Font Awesome Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
@@ -15,7 +13,6 @@
             --panel-border: #1e293b;
             --accent-cyan: #00f2fe;
             --accent-pink: #ff0055;
-            --accent-green: #00ff87;
             --text-main: #f1f5f9;
             --text-muted: #64748b;
         }
@@ -25,101 +22,80 @@
         body {
             background-color: var(--bg-main);
             color: var(--text-main);
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            min-width: 1280px;
-            height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            padding-bottom: 20px;
         }
 
-        /* --- HEADER TRANSPORT BAR --- */
         header {
             background: #0f141f;
             border-bottom: 2px solid var(--panel-border);
-            padding: 10px 24px;
+            padding: 12px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-            z-index: 10;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .brand {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 900;
-            letter-spacing: 1px;
             display: flex;
             align-items: center;
             gap: 10px;
         }
-        .brand i { color: var(--accent-cyan); text-shadow: 0 0 10px var(--accent-cyan); }
+        .brand i { color: var(--accent-cyan); }
         .brand span { color: var(--accent-pink); }
 
-        .transport-controls {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .lcd-display {
-            background: #05070a;
-            border: 1px solid #1e293b;
-            border-radius: 6px;
-            padding: 6px 16px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
-        }
-
-        .lcd-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .lcd-label { font-size: 0.65rem; color: var(--text-muted); font-weight: 800; }
-        .lcd-value { font-size: 1.1rem; font-weight: 900; color: var(--accent-cyan); font-family: monospace; }
+        .controls { display: flex; align-items: center; gap: 12px; }
 
         .btn {
             background: #1e293b;
             color: #fff;
             border: 1px solid #334155;
-            padding: 8px 18px;
+            padding: 8px 16px;
             border-radius: 6px;
             font-weight: 800;
             font-size: 0.85rem;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
-            transition: all 0.15s;
+            gap: 6px;
         }
-        .btn:hover { border-color: var(--accent-cyan); color: var(--accent-cyan); }
         .btn-play { background: linear-gradient(135deg, #00f2fe, #0066ff); color: #000; border: none; }
-        .btn-play:hover { box-shadow: 0 0 15px var(--accent-cyan); color: #000; }
         .btn-play.playing { background: linear-gradient(135deg, #ff0055, #ff5500); color: #fff; }
 
+        .bpm-box {
+            background: #05070a;
+            border: 1px solid #1e293b;
+            padding: 4px 10px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            font-weight: 800;
+        }
         input[type=number] {
             background: transparent;
             border: none;
             color: var(--accent-cyan);
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 900;
-            width: 50px;
+            width: 45px;
             text-align: center;
-            font-family: monospace;
         }
 
-        /* --- MAIN WORKSPACE GRID --- */
         main {
             display: grid;
-            grid-template-columns: 2.3fr 1fr;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 16px;
             padding: 16px;
             flex-grow: 1;
-            height: calc(100vh - 65px);
-            overflow: hidden;
         }
 
         .panel {
@@ -130,145 +106,194 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-            overflow: hidden;
         }
 
-        .panel-header {
+        .panel-title {
             font-size: 0.85rem;
             font-weight: 800;
             color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 1.2px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             border-bottom: 1px solid #1e293b;
             padding-bottom: 8px;
-        }
-
-        /* --- SEQUENCER --- */
-        .sequencer-container {
             display: flex;
-            flex-direction: column;
-            gap: 8px;
-            overflow-y: auto;
-            padding-right: 4px;
-        }
-
-        .track-row {
-            display: grid;
-            grid-template-columns: 120px repeat(16, 1fr);
-            gap: 6px;
-            align-items: center;
-        }
-
-        .track-info {
-            background: #0f141f;
-            border: 1px solid #1e293b;
-            padding: 8px 10px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
             justify-content: space-between;
         }
 
+        .sequencer-container { display: flex; flex-direction: column; gap: 8px; overflow-x: auto; }
+        .track-row { display: flex; gap: 6px; align-items: center; }
+        .track-name { width: 60px; font-size: 0.75rem; font-weight: 800; color: var(--accent-pink); flex-shrink: 0; }
+        .steps-flex { display: flex; gap: 4px; flex-grow: 1; }
+        
         .step-pad {
-            aspect-ratio: 1;
+            width: 28px;
+            height: 32px;
             background: #182030;
             border-radius: 4px;
             border: 1px solid #28354d;
             cursor: pointer;
-            transition: all 0.1s;
+            flex-shrink: 0;
         }
-        .step-pad:nth-child(4n+2) { border-left: 2px solid #3b82f6; }
-        .step-pad.active {
-            background: var(--accent-cyan);
-            box-shadow: 0 0 10px var(--accent-cyan);
-            border-color: #fff;
-        }
+        .step-pad.active { background: var(--accent-cyan); box-shadow: 0 0 8px var(--accent-cyan); border-color: #fff; }
         .step-pad.current { border: 2px solid var(--accent-pink); }
 
-        /* --- PIANO KEYBOARD --- */
-        .keyboard-wrapper {
-            display: flex;
-            height: 120px;
-            position: relative;
-            background: #000;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 2px solid #1e293b;
-        }
-        .key {
-            flex: 1;
-            background: #f8fafc;
-            border: 1px solid #cbd5e1;
-            border-radius: 0 0 4px 4px;
-            cursor: pointer;
-            position: relative;
-            z-index: 1;
-        }
-        .key.active, .key:active { background: var(--accent-cyan); }
-        .key.black {
-            background: #0f172a;
-            height: 60%;
-            width: 3.5%;
-            position: absolute;
-            z-index: 2;
-            margin-left: -1.75%;
-            border-radius: 0 0 4px 4px;
-            border: 1px solid #334155;
-        }
-        .key.black.active, .key.black:active { background: var(--accent-pink); box-shadow: 0 0 10px var(--accent-pink); }
-
-        /* --- MPC DRUM PADS --- */
-        .pads-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-        }
-
+        .pads-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
         .mpc-pad {
             aspect-ratio: 1.1;
             background: linear-gradient(145deg, #182030, #0f141f);
             border: 2px solid #28354d;
             border-radius: 8px;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             cursor: pointer;
             font-weight: 800;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: #94a3b8;
-            transition: all 0.08s;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
         }
-        .mpc-pad:hover { border-color: var(--accent-cyan); color: #fff; }
-        .mpc-pad:active, .mpc-pad.hit {
-            background: var(--accent-pink);
-            color: #fff;
-            box-shadow: 0 0 18px var(--accent-pink);
-            transform: scale(0.96);
-        }
+        .mpc-pad:active, .mpc-pad.hit { background: var(--accent-pink); color: #fff; box-shadow: 0 0 15px var(--accent-pink); }
 
-        /* --- VISUALIZER --- */
-        .visualizer-box {
-            height: 90px;
-            background: #05070a;
+        .keyboard-wrapper {
+            display: flex;
+            height: 100px;
+            background: #000;
             border-radius: 6px;
+            overflow-x: auto;
             border: 1px solid #1e293b;
-            overflow: hidden;
+            padding: 2px;
         }
-        canvas { width: 100%; height: 100%; }
+        .key {
+            flex: 0 0 32px;
+            background: #f8fafc;
+            border-radius: 0 0 4px 4px;
+            cursor: pointer;
+            margin-right: 2px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 6px;
+            font-size: 0.65rem;
+            color: #333;
+            font-weight: bold;
+        }
+        .key:active, .key.active { background: var(--accent-cyan); }
+        .key.black { background: #121824; color: #fff; height: 60%; flex: 0 0 22px; margin-left: -12px; margin-right: -12px; z-index: 2; }
 
-        /* --- SYNTH CONTROLS / FX --- */
-        .fx-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
+        .visualizer-box { height: 70px; background: #05070a; border-radius: 6px; border: 1px solid #1e293b; }
+        canvas { width: 100%; height: 100%; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="brand"><i class="fa-solid fa-compact-disc"></i> Enri<span>Prod</span> Studio</div>
+        <div class="controls">
+            <div class="bpm-box">
+                BPM <input type="number" id="bpm" value="120" min="60" max="200">
+            </div>
+            <button class="btn btn-play" id="playBtn"><i class="fa-solid fa-play"></i> PLAY</button>
+            <button class="btn" id="clearBtn"><i class="fa-solid fa-trash-can"></i> CLEAR</button>
+        </div>
+    </header>
+
+    <main>
+        <section class="panel">
+            <div class="panel-title"><span><i class="fa-solid fa-sliders"></i> 16-Step Sequencer</span></div>
+            <div class="sequencer-container" id="sequencer"></div>
+            
+            <div class="panel-title" style="margin-top: 10px;"><span><i class="fa-solid fa-keyboard"></i> Synthesizer Keyboard</span></div>
+            <div class="keyboard-wrapper" id="keyboard"></div>
+        </section>
+
+        <section class="panel">
+            <div class="panel-title"><span><i class="fa-solid fa-wave-square"></i> Audio Spectrum</span></div>
+            <div class="visualizer-box">
+                <canvas id="visCanvas"></canvas>
+            </div>
+
+            <div class="panel-title"><span><i class="fa-solid fa-grip-vertical"></i> MPC Drum Pads</span></div>
+            <div class="pads-grid" id="pads"></div>
+        </section>
+    </main>
+
+    <script>
+        let isPlaying = false, currentStep = 0;
+        let synths = {};
+
+        // Khởi tạo âm thanh an toàn
+        function initAudio() {
+            if (synths.Kick) return;
+            synths = {
+                Kick: new Tone.MembraneSynth().toDestination(),
+                Snare: new Tone.NoiseSynth({ noise: { type: 'white' }, envelope: { attack: 0.005, decay: 0.1, sustain: 0 } }).toDestination(),
+                HiHat: new Tone.MetalSynth({ frequency: 250, envelope: { attack: 0.001, decay: 0.05, release: 0.05 }, harmonicity: 5.1 }).toDestination(),
+                Clap: new Tone.NoiseSynth({ noise: { type: 'pink' }, envelope: { attack: 0.001, decay: 0.15, sustain: 0 } }).toDestination(),
+                Synth: new Tone.PolySynth(Tone.Synth).toDestination()
+            };
         }
-        .fx-card {
-            background: #0f14
+
+        const tracks = ['Kick', 'Snare', 'HiHat', 'Clap'];
+        const grid = Array(4).fill(null).map(() => Array(16).fill(false));
+
+        // Render Sequencer
+        const seqContainer = document.getElementById('sequencer');
+        tracks.forEach((track, tIdx) => {
+            const row = document.createElement('div');
+            row.className = 'track-row';
+            row.innerHTML = `<div class="track-name">${track}</div>`;
+            const stepsFlex = document.createElement('div');
+            stepsFlex.className = 'steps-flex';
+            for (let sIdx = 0; sIdx < 16; sIdx++) {
+                const step = document.createElement('div');
+                step.className = `step-pad s-${tIdx}-${sIdx}`;
+                step.onclick = () => {
+                    grid[tIdx][sIdx] = !grid[tIdx][sIdx];
+                    step.classList.toggle('active', grid[tIdx][sIdx]);
+                };
+                stepsFlex.appendChild(step);
+            }
+            row.appendChild(stepsFlex);
+            seqContainer.appendChild(row);
+        });
+
+        // Transport Loop
+        Tone.Transport.scheduleRepeat((time) => {
+            document.querySelectorAll('.step-pad').forEach(s => s.classList.remove('current'));
+            tracks.forEach((track, tIdx) => {
+                const stepEl = document.querySelector(`.s-${tIdx}-${currentStep}`);
+                if (stepEl) stepEl.classList.add('current');
+                if (grid[tIdx][currentStep] && synths[track]) {
+                    if (track === 'Kick') synths.Kick.triggerAttackRelease('C1', '8n', time);
+                    if (track === 'Snare') synths.Snare.triggerAttackRelease('8n', time);
+                    if (track === 'HiHat') synths.HiHat.triggerAttackRelease('32n', time);
+                    if (track === 'Clap') synths.Clap.triggerAttackRelease('8n', time);
+                }
+            });
+            currentStep = (currentStep + 1) % 16;
+        }, '16n');
+
+        // Play/Stop
+        document.getElementById('playBtn').onclick = async () => {
+            await Tone.start();
+            initAudio();
+            if (isPlaying) {
+                Tone.Transport.stop();
+                document.getElementById('playBtn').innerHTML = '<i class="fa-solid fa-play"></i> PLAY';
+                document.getElementById('playBtn').classList.remove('playing');
+            } else {
+                Tone.Transport.bpm.value = document.getElementById('bpm').value;
+                Tone.Transport.start();
+                document.getElementById('playBtn').innerHTML = '<i class="fa-solid fa-stop"></i> STOP';
+                document.getElementById('playBtn').classList.add('playing');
+            }
+            isPlaying = !isPlaying;
+        };
+
+        // Render MPC Pads
+        const padNames = ['KICK', 'SNARE', 'HIHAT', 'CLAP', 'PERC 1', 'PERC 2', 'BASS', 'HIT'];
+        const padsContainer = document.getElementById('pads');
+        padNames.forEach((name, i) => {
+            const pad = document.createElement('div');
+            pad.className = 'mpc-pad';
+            pad.innerText = name;
+            pad.onclick = async () => {
+                await Tone.start();
