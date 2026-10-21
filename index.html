@@ -2,97 +2,104 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EnriProd Studio - DAW Beat Maker Pro</title>
+    <meta name="viewport" content="width=1440, initial-scale=0.3">
+    <title>EnriProd Studio - Ultimate Pro Desktop DAW</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --bg-main: #0a0d14;
-            --panel-bg: #121824;
-            --panel-border: #1e293b;
+            --bg-dark: #070a10;
+            --panel-bg: #101622;
+            --panel-border: #1a2336;
             --accent-cyan: #00f2fe;
             --accent-pink: #ff0055;
-            --text-main: #f1f5f9;
-            --text-muted: #64748b;
+            --accent-green: #00ff87;
+            --accent-orange: #ffaa00;
+            --text-main: #e2e8f0;
+            --text-muted: #475569;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
         
         body {
-            background-color: var(--bg-main);
+            background-color: var(--bg-dark);
             color: var(--text-main);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            width: 1440px;
+            margin: 0 auto;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            padding-bottom: 20px;
+            overflow-x: auto;
+            background-image: radial-gradient(#1e293b 1px, transparent 1px);
+            background-size: 24px 24px;
         }
 
+        /* --- TOP TRANSPORT BAR --- */
         header {
-            background: #0f141f;
-            border-bottom: 2px solid var(--panel-border);
-            padding: 12px 20px;
+            background: #0b0f19;
+            border-bottom: 2px solid #1e293b;
+            padding: 10px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-            flex-wrap: wrap;
-            gap: 10px;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.8);
         }
 
-        .brand {
-            font-size: 1.4rem;
-            font-weight: 900;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .brand i { color: var(--accent-cyan); }
+        .brand { font-size: 1.5rem; font-weight: 900; letter-spacing: 1.5px; display: flex; align-items: center; gap: 10px; }
+        .brand i { color: var(--accent-cyan); text-shadow: 0 0 12px var(--accent-cyan); }
         .brand span { color: var(--accent-pink); }
 
-        .controls { display: flex; align-items: center; gap: 12px; }
+        .transport-controls { display: flex; align-items: center; gap: 16px; }
+
+        .lcd-display {
+            background: #04060a;
+            border: 1px solid #1e2d4a;
+            border-radius: 6px;
+            padding: 6px 18px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: inset 0 0 12px rgba(0,0,0,0.9);
+        }
+
+        .lcd-item { display: flex; flex-direction: column; align-items: center; }
+        .lcd-label { font-size: 0.6rem; color: var(--text-muted); font-weight: 800; letter-spacing: 1px; }
+        .lcd-value { font-size: 1.2rem; font-weight: 900; color: var(--accent-cyan); font-family: monospace; text-shadow: 0 0 8px rgba(0,242,254,0.4); }
 
         .btn {
-            background: #1e293b;
+            background: #182235;
             color: #fff;
-            border: 1px solid #334155;
-            padding: 8px 16px;
+            border: 1px solid #2a3a5c;
+            padding: 8px 18px;
             border-radius: 6px;
             font-weight: 800;
             font-size: 0.85rem;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            transition: all 0.15s;
         }
+        .btn:hover { border-color: var(--accent-cyan); color: var(--accent-cyan); }
         .btn-play { background: linear-gradient(135deg, #00f2fe, #0066ff); color: #000; border: none; }
         .btn-play.playing { background: linear-gradient(135deg, #ff0055, #ff5500); color: #fff; }
 
-        .bpm-box {
-            background: #05070a;
-            border: 1px solid #1e293b;
-            padding: 4px 10px;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.8rem;
-            font-weight: 800;
-        }
         input[type=number] {
             background: transparent;
             border: none;
             color: var(--accent-cyan);
-            font-size: 1rem;
+            font-size: 1.2rem;
             font-weight: 900;
-            width: 45px;
+            width: 55px;
             text-align: center;
+            font-family: monospace;
         }
 
+        /* --- MAIN DESKTOP GRID --- */
         main {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: 880px 520px;
             gap: 16px;
             padding: 16px;
             flex-grow: 1;
@@ -101,180 +108,276 @@
         .panel {
             background: var(--panel-bg);
             border: 1px solid var(--panel-border);
-            border-radius: 10px;
-            padding: 16px;
+            border-radius: 8px;
+            padding: 14px;
             display: flex;
             flex-direction: column;
             gap: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        .panel-title {
-            font-size: 0.85rem;
-            font-weight: 800;
-            color: var(--text-muted);
+        .panel-header {
+            font-size: 0.8rem;
+            font-weight: 900;
+            color: #64748b;
             text-transform: uppercase;
-            border-bottom: 1px solid #1e293b;
-            padding-bottom: 8px;
+            letter-spacing: 1.5px;
             display: flex;
             justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #1a2336;
+            padding-bottom: 6px;
         }
 
-        .sequencer-container { display: flex; flex-direction: column; gap: 8px; overflow-x: auto; }
-        .track-row { display: flex; gap: 6px; align-items: center; }
-        .track-name { width: 60px; font-size: 0.75rem; font-weight: 800; color: var(--accent-pink); flex-shrink: 0; }
-        .steps-flex { display: flex; gap: 4px; flex-grow: 1; }
-        
-        .step-pad {
-            width: 28px;
-            height: 32px;
-            background: #182030;
+        /* SEQUENCER MATRIX */
+        .sequencer-container { display: flex; flex-direction: column; gap: 6px; }
+        .track-row { display: grid; grid-template-columns: 140px repeat(16, 1fr); gap: 6px; align-items: center; }
+        .track-controls {
+            background: #090d16;
+            border: 1px solid #1a2336;
+            padding: 6px 8px;
             border-radius: 4px;
-            border: 1px solid #28354d;
-            cursor: pointer;
-            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: #cbd5e1;
         }
-        .step-pad.active { background: var(--accent-cyan); box-shadow: 0 0 8px var(--accent-cyan); border-color: #fff; }
+        .track-btns { display: flex; gap: 4px; }
+        .opt-btn { background: #1a2336; border: none; color: #64748b; font-size: 0.6rem; padding: 2px 4px; border-radius: 2px; cursor: pointer; font-weight: bold; }
+        .opt-btn.active-m { background: var(--accent-pink); color: #fff; }
+        .opt-btn.active-s { background: var(--accent-orange); color: #000; }
+
+        .step-pad {
+            aspect-ratio: 1;
+            background: #141c2e;
+            border-radius: 3px;
+            border: 1px solid #22304d;
+            cursor: pointer;
+            transition: all 0.05s;
+        }
+        .step-pad:nth-child(4n+2) { border-left: 2px solid #3b82f6; }
+        .step-pad.active { background: var(--accent-cyan); box-shadow: 0 0 12px var(--accent-cyan); border-color: #fff; }
         .step-pad.current { border: 2px solid var(--accent-pink); }
 
+        /* MIXER RACK */
+        .mixer-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; height: 160px; background: #080c14; padding: 10px; border-radius: 6px; border: 1px solid #1a2336; }
+        .mixer-channel { display: flex; flex-direction: column; align-items: center; gap: 6px; background: #0f1624; border: 1px solid #1c273e; padding: 6px; border-radius: 4px; }
+        .channel-title { font-size: 0.65rem; font-weight: 900; color: var(--accent-cyan); }
+        .fader-wrapper { display: flex; align-items: center; gap: 8px; height: 100px; }
+        input[type=range].fader { writing-mode: bt-linear; -webkit-appearance: slider-vertical; width: 12px; height: 90px; accent-color: var(--accent-cyan); }
+        .meter { width: 6px; height: 90px; background: #1a2336; border-radius: 3px; position: relative; overflow: hidden; }
+        .meter-fill { position: absolute; bottom: 0; width: 100%; height: 0%; background: linear-gradient(to top, var(--accent-green), var(--accent-orange), var(--accent-pink)); transition: height 0.05s; }
+
+        /* PIANO KEYBOARD */
+        .keyboard-wrapper { display: flex; height: 130px; position: relative; background: #000; border-radius: 6px; overflow: hidden; border: 2px solid #1a2336; }
+        .key { flex: 1; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 0 0 4px 4px; cursor: pointer; position: relative; z-index: 1; }
+        .key.active, .key:active { background: var(--accent-cyan); }
+        .key.black { background: #0f172a; height: 60%; width: 3.2%; position: absolute; z-index: 2; margin-left: -1.6%; border-radius: 0 0 4px 4px; border: 1px solid #334155; }
+        .key.black.active, .key.black:active { background: var(--accent-pink); box-shadow: 0 0 10px var(--accent-pink); }
+
+        /* MPC PADS */
         .pads-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
         .mpc-pad {
-            aspect-ratio: 1.1;
-            background: linear-gradient(145deg, #182030, #0f141f);
-            border: 2px solid #28354d;
-            border-radius: 8px;
+            aspect-ratio: 1.15;
+            background: linear-gradient(145deg, #141c2e, #0a0f1a);
+            border: 2px solid #22304d;
+            border-radius: 6px;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             cursor: pointer;
             font-weight: 800;
             font-size: 0.75rem;
             color: #94a3b8;
+            transition: all 0.05s;
         }
-        .mpc-pad:active, .mpc-pad.hit { background: var(--accent-pink); color: #fff; box-shadow: 0 0 15px var(--accent-pink); }
+        .mpc-pad:hover { border-color: var(--accent-cyan); color: #fff; }
+        .mpc-pad:active, .mpc-pad.hit { background: var(--accent-pink); color: #fff; box-shadow: 0 0 15px var(--accent-pink); transform: scale(0.96); }
 
-        .keyboard-wrapper {
-            display: flex;
-            height: 100px;
-            background: #000;
-            border-radius: 6px;
-            overflow-x: auto;
-            border: 1px solid #1e293b;
-            padding: 2px;
-        }
-        .key {
-            flex: 0 0 32px;
-            background: #f8fafc;
-            border-radius: 0 0 4px 4px;
-            cursor: pointer;
-            margin-right: 2px;
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            padding-bottom: 6px;
-            font-size: 0.65rem;
-            color: #333;
-            font-weight: bold;
-        }
-        .key:active, .key.active { background: var(--accent-cyan); }
-        .key.black { background: #121824; color: #fff; height: 60%; flex: 0 0 22px; margin-left: -12px; margin-right: -12px; z-index: 2; }
-
-        .visualizer-box { height: 70px; background: #05070a; border-radius: 6px; border: 1px solid #1e293b; }
+        /* VISUALIZER */
+        .vis-box { height: 90px; background: #04060a; border-radius: 6px; border: 1px solid #1a2336; overflow: hidden; }
         canvas { width: 100%; height: 100%; }
+
+        /* FX RACK */
+        .fx-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+        .fx-card { background: #090d16; border: 1px solid #1a2336; padding: 8px 10px; border-radius: 4px; display: flex; flex-direction: column; gap: 4px; }
+        .fx-card label { font-size: 0.65rem; font-weight: 800; color: var(--text-muted); display: flex; justify-content: space-between; }
+        input[type=range] { accent-color: var(--accent-cyan); cursor: pointer; }
     </style>
 </head>
 <body>
 
+    <!-- TRANSPORT BAR -->
     <header>
-        <div class="brand"><i class="fa-solid fa-compact-disc"></i> Enri<span>Prod</span> Studio</div>
-        <div class="controls">
-            <div class="bpm-box">
-                BPM <input type="number" id="bpm" value="120" min="60" max="200">
-            </div>
+        <div class="brand"><i class="fa-solid fa-compact-disc"></i> Enri<span>Prod</span> Studio Pro DAW</div>
+        
+        <div class="transport-controls">
             <button class="btn btn-play" id="playBtn"><i class="fa-solid fa-play"></i> PLAY</button>
             <button class="btn" id="clearBtn"><i class="fa-solid fa-trash-can"></i> CLEAR</button>
+            
+            <div class="lcd-display">
+                <div class="lcd-item">
+                    <span class="lcd-label">TEMPO</span>
+                    <input type="number" id="bpm" value="120" min="60" max="200">
+                </div>
+                <div class="lcd-item">
+                    <span class="lcd-label">BAR / BEAT</span>
+                    <span class="lcd-value" id="lcdPos">01 : 01 : 01</span>
+                </div>
+            </div>
         </div>
     </header>
 
     <main>
+        <!-- LEFT COLUMN -->
         <section class="panel">
-            <div class="panel-title"><span><i class="fa-solid fa-sliders"></i> 16-Step Sequencer</span></div>
+            <div class="panel-header">
+                <span><i class="fa-solid fa-sliders"></i> 16-Step Pattern Sequencer Rack</span>
+            </div>
             <div class="sequencer-container" id="sequencer"></div>
-            
-            <div class="panel-title" style="margin-top: 10px;"><span><i class="fa-solid fa-keyboard"></i> Synthesizer Keyboard</span></div>
+
+            <div class="panel-header" style="margin-top: 8px;">
+                <span><i class="fa-solid fa-list-check"></i> Master Multi-Channel Mixer</span>
+            </div>
+            <div class="mixer-grid" id="mixer"></div>
+
+            <div class="panel-header" style="margin-top: 8px;">
+                <span><i class="fa-solid fa-keyboard"></i> Synthesizer Keyboard (2 Octaves Full)</span>
+            </div>
             <div class="keyboard-wrapper" id="keyboard"></div>
         </section>
 
+        <!-- RIGHT COLUMN -->
         <section class="panel">
-            <div class="panel-title"><span><i class="fa-solid fa-wave-square"></i> Audio Spectrum</span></div>
-            <div class="visualizer-box">
+            <div class="panel-header">
+                <span><i class="fa-solid fa-wave-square"></i> Oscilloscope Frequency Spectrum</span>
+            </div>
+            <div class="vis-box">
                 <canvas id="visCanvas"></canvas>
             </div>
 
-            <div class="panel-title"><span><i class="fa-solid fa-grip-vertical"></i> MPC Drum Pads</span></div>
+            <div class="panel-header">
+                <span><i class="fa-solid fa-grip-vertical"></i> MPC Performance Trigger Pads (4x4)</span>
+            </div>
             <div class="pads-grid" id="pads"></div>
+
+            <div class="panel-header">
+                <span><i class="fa-solid fa-gears"></i> Master FX Rack Processor</span>
+            </div>
+            <div class="fx-grid">
+                <div class="fx-card">
+                    <label>CUTOFF FREQ <span id="cutoffVal">3000Hz</span></label>
+                    <input type="range" id="cutoff" min="200" max="10000" value="3000">
+                </div>
+                <div class="fx-card">
+                    <label>REVERB DECAY <span id="verbVal">1.8s</span></label>
+                    <input type="range" id="reverb" min="0.1" max="6" step="0.1" value="1.8">
+                </div>
+                <div class="fx-card">
+                    <label>DISTORTION DRIVE <span id="distVal">0.0</span></label>
+                    <input type="range" id="dist" min="0" max="0.8" step="0.05" value="0">
+                </div>
+                <div class="fx-card">
+                    <label>MASTER VOLUME <span id="volVal">0dB</span></label>
+                    <input type="range" id="masterVol" min="-30" max="6" value="0">
+                </div>
+            </div>
         </section>
     </main>
 
     <script>
+        // Audio Engine Setup
+        const filter = new Tone.Filter(3000, "lowpass").toDestination();
+        const reverb = new Tone.Reverb(1.8).connect(filter);
+        const dist = new Tone.Distortion(0).connect(reverb);
+
+        const synths = {
+            Kick: new Tone.MembraneSynth().connect(filter),
+            Snare: new Tone.NoiseSynth({ noise: { type: 'white' }, envelope: { attack: 0.005, decay: 0.1, sustain: 0 } }).connect(filter),
+            HiHat: new Tone.MetalSynth({ frequency: 250, envelope: { attack: 0.001, decay: 0.05, release: 0.05 }, harmonicity: 5.1 }).connect(filter),
+            Clap: new Tone.NoiseSynth({ noise: { type: 'pink' }, envelope: { attack: 0.001, decay: 0.15, sustain: 0 } }).connect(filter),
+            Bass: new Tone.MonoSynth({ oscillator: { type: "sawtooth" } }).connect(filter),
+            Lead: new Tone.PolySynth(Tone.Synth).connect(dist)
+        };
+
+        const tracks = ['Kick', 'Snare', 'HiHat', 'Clap', 'Bass', 'Lead'];
+        const grid = Array(6).fill(null).map(() => Array(16).fill(false));
         let isPlaying = false, currentStep = 0;
-        let synths = {};
-
-        // Khởi tạo âm thanh an toàn
-        function initAudio() {
-            if (synths.Kick) return;
-            synths = {
-                Kick: new Tone.MembraneSynth().toDestination(),
-                Snare: new Tone.NoiseSynth({ noise: { type: 'white' }, envelope: { attack: 0.005, decay: 0.1, sustain: 0 } }).toDestination(),
-                HiHat: new Tone.MetalSynth({ frequency: 250, envelope: { attack: 0.001, decay: 0.05, release: 0.05 }, harmonicity: 5.1 }).toDestination(),
-                Clap: new Tone.NoiseSynth({ noise: { type: 'pink' }, envelope: { attack: 0.001, decay: 0.15, sustain: 0 } }).toDestination(),
-                Synth: new Tone.PolySynth(Tone.Synth).toDestination()
-            };
-        }
-
-        const tracks = ['Kick', 'Snare', 'HiHat', 'Clap'];
-        const grid = Array(4).fill(null).map(() => Array(16).fill(false));
 
         // Render Sequencer
         const seqContainer = document.getElementById('sequencer');
         tracks.forEach((track, tIdx) => {
             const row = document.createElement('div');
             row.className = 'track-row';
-            row.innerHTML = `<div class="track-name">${track}</div>`;
-            const stepsFlex = document.createElement('div');
-            stepsFlex.className = 'steps-flex';
+            row.innerHTML = `
+                <div class="track-controls">
+                    <span>${track}</span>
+                    <div class="track-btns">
+                        <button class="opt-btn" onclick="this.classList.toggle('active-m')">M</button>
+                        <button class="opt-btn" onclick="this.classList.toggle('active-s')">S</button>
+                    </div>
+                </div>`;
             for (let sIdx = 0; sIdx < 16; sIdx++) {
                 const step = document.createElement('div');
-                step.className = `step-pad s-${tIdx}-${sIdx}`;
+                step.className = 'step-pad';
                 step.onclick = () => {
                     grid[tIdx][sIdx] = !grid[tIdx][sIdx];
                     step.classList.toggle('active', grid[tIdx][sIdx]);
                 };
-                stepsFlex.appendChild(step);
+                row.appendChild(step);
             }
-            row.appendChild(stepsFlex);
             seqContainer.appendChild(row);
         });
 
-        // Transport Loop
+        // Render Mixer
+        const mixerContainer = document.getElementById('mixer');
+        tracks.forEach(track => {
+            const chan = document.createElement('div');
+            chan.className = 'mixer-channel';
+            chan.innerHTML = `
+                <span class="channel-title">${track}</span>
+                <div class="fader-wrapper">
+                    <input type="range" class="fader" min="-30" max="6" value="0">
+                    <div class="meter"><div class="meter-fill" id="m-${track}"></div></div>
+                </div>`;
+            mixerContainer.appendChild(chan);
+        });
+
+        // Loop Transport
         Tone.Transport.scheduleRepeat((time) => {
-            document.querySelectorAll('.step-pad').forEach(s => s.classList.remove('current'));
+            const steps = document.querySelectorAll('.step-pad');
+            steps.forEach((s, idx) => {
+                if (idx % 16 === currentStep) s.classList.add('current');
+                else s.classList.remove('current');
+            });
+
+            document.getElementById('lcdPos').innerText = `01 : ${String(Math.floor(currentStep / 4) + 1).padStart(2, '0')} : ${String((currentStep % 4) + 1).padStart(2, '0')}`;
+
             tracks.forEach((track, tIdx) => {
-                const stepEl = document.querySelector(`.s-${tIdx}-${currentStep}`);
-                if (stepEl) stepEl.classList.add('current');
-                if (grid[tIdx][currentStep] && synths[track]) {
+                if (grid[tIdx][currentStep]) {
                     if (track === 'Kick') synths.Kick.triggerAttackRelease('C1', '8n', time);
                     if (track === 'Snare') synths.Snare.triggerAttackRelease('8n', time);
                     if (track === 'HiHat') synths.HiHat.triggerAttackRelease('32n', time);
                     if (track === 'Clap') synths.Clap.triggerAttackRelease('8n', time);
+                    if (track === 'Bass') synths.Bass.triggerAttackRelease('C1', '8n', time);
+                    if (track === 'Lead') synths.Lead.triggerAttackRelease('E3', '8n', time);
+
+                    const m = document.getElementById(`m-${track}`);
+                    if (m) {
+                        m.style.height = '90%';
+                        setTimeout(() => m.style.height = '0%', 100);
+                    }
                 }
             });
             currentStep = (currentStep + 1) % 16;
         }, '16n');
 
-        // Play/Stop
+        // Play/Stop Control
         document.getElementById('playBtn').onclick = async () => {
             await Tone.start();
-            initAudio();
             if (isPlaying) {
                 Tone.Transport.stop();
                 document.getElementById('playBtn').innerHTML = '<i class="fa-solid fa-play"></i> PLAY';
@@ -288,8 +391,8 @@
             isPlaying = !isPlaying;
         };
 
-        // Render MPC Pads
-        const padNames = ['KICK', 'SNARE', 'HIHAT', 'CLAP', 'PERC 1', 'PERC 2', 'BASS', 'HIT'];
+        // Render MPC Pads (16 Pads)
+        const padNames = ['KICK', 'SNARE', 'HIHAT', 'CLAP', 'PERC 1', 'PERC 2', 'BASS 1', 'BASS 2', 'SYNTH 1', 'SYNTH 2', 'LEAD 1', 'LEAD 2', 'VOX 1', 'VOX 2', 'FX 1', 'FX 2'];
         const padsContainer = document.getElementById('pads');
         padNames.forEach((name, i) => {
             const pad = document.createElement('div');
@@ -297,56 +400,80 @@
             pad.innerText = name;
             pad.onclick = async () => {
                 await Tone.start();
-                initAudio();
                 pad.classList.add('hit');
                 setTimeout(() => pad.classList.remove('hit'), 120);
                 if (i === 0) synths.Kick.triggerAttackRelease('C1', '8n');
                 else if (i === 1) synths.Snare.triggerAttackRelease('8n');
                 else if (i === 2) synths.HiHat.triggerAttackRelease('32n');
                 else if (i === 3) synths.Clap.triggerAttackRelease('8n');
-                else synths.Synth.triggerAttackRelease(['C3', 'E3', 'G3', 'B3'][i % 4], '8n');
+                else synths.Lead.triggerAttackRelease(['C3', 'E3', 'G3', 'B3', 'C4'][i % 5], '8n');
             };
             padsContainer.appendChild(pad);
         });
 
-        // Render Piano Keyboard
+        // Piano Keyboard (25 Keys)
         const kbContainer = document.getElementById('keyboard');
-        const notes = ['C3', 'C#3', 'D3', 'D#3', 'E3', 'F3', 'F#3', 'G3', 'G#3', 'A3', 'A#3', 'B3', 'C4'];
-        notes.forEach((note) => {
+        const notes = [
+            { note: 'C3', isBlack: false }, { note: 'C#3', isBlack: true }, { note: 'D3', isBlack: false }, { note: 'D#3', isBlack: true },
+            { note: 'E3', isBlack: false }, { note: 'F3', isBlack: false }, { note: 'F#3', isBlack: true }, { note: 'G3', isBlack: false },
+            { note: 'G#3', isBlack: true }, { note: 'A3', isBlack: false }, { note: 'A#3', isBlack: true }, { note: 'B3', isBlack: false },
+            { note: 'C4', isBlack: false }, { note: 'C#4', isBlack: true }, { note: 'D4', isBlack: false }, { note: 'D#4', isBlack: true },
+            { note: 'E4', isBlack: false }, { note: 'F4', isBlack: false }, { note: 'F#4', isBlack: true }, { note: 'G4', isBlack: false },
+            { note: 'G#4', isBlack: true }, { note: 'A4', isBlack: false }, { note: 'A#4', isBlack: true }, { note: 'B4', isBlack: false }, { note: 'C5', isBlack: false }
+        ];
+
+        let leftPos = 0;
+        notes.forEach((item) => {
             const key = document.createElement('div');
-            const isBlack = note.includes('#');
-            key.className = `key ${isBlack ? 'black' : ''}`;
-            key.innerText = isBlack ? '' : note;
+            if (item.isBlack) {
+                key.className = 'key black';
+                key.style.left = leftPos + '%';
+            } else {
+                key.className = 'key';
+                leftPos += (100 / 15);
+            }
             key.onclick = async () => {
                 await Tone.start();
-                initAudio();
                 key.classList.add('active');
                 setTimeout(() => key.classList.remove('active'), 150);
-                synths.Synth.triggerAttackRelease(note, '8n');
+                synths.Lead.triggerAttackRelease(item.note, '8n');
             };
             kbContainer.appendChild(key);
         });
 
-        // Clear
+        // FX Controls
+        document.getElementById('cutoff').oninput = (e) => {
+            filter.frequency.value = e.target.value;
+            document.getElementById('cutoffVal').innerText = e.target.value + 'Hz';
+        };
+        document.getElementById('reverb').oninput = (e) => {
+            reverb.decay = e.target.value;
+            document.getElementById('verbVal').innerText = e.target.value + 's';
+        };
+        document.getElementById('dist').oninput = (e) => {
+            dist.distortion = e.target.value;
+            document.getElementById('distVal').innerText = e.target.value;
+        };
+
         document.getElementById('clearBtn').onclick = () => {
-            for (let r = 0; r < 4; r++) grid[r].fill(false);
+            for (let r = 0; r < 6; r++) grid[r].fill(false);
             document.querySelectorAll('.step-pad').forEach(s => s.classList.remove('active'));
         };
 
-        // Visualizer Canvas
+        // Realtime Visualizer Canvas
         const canvas = document.getElementById('visCanvas');
         const ctx = canvas.getContext('2d');
         function drawVis() {
             requestAnimationFrame(drawVis);
-            ctx.fillStyle = '#05070a';
+            ctx.fillStyle = '#04060a';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.lineWidth = 2;
-            ctx.strokeStyle = isPlaying ? '#00f2fe' : '#1e293b';
+            ctx.strokeStyle = isPlaying ? '#00f2fe' : '#1a2336';
             ctx.beginPath();
-            const slices = 20;
+            const slices = 32;
             const w = canvas.width / slices;
             for (let i = 0; i < slices; i++) {
-                const h = isPlaying ? (Math.random() * 0.6 + 0.2) * canvas.height : canvas.height / 2;
+                const h = isPlaying ? (Math.random() * 0.8 + 0.1) * canvas.height : canvas.height / 2;
                 if (i === 0) ctx.moveTo(0, h);
                 else ctx.lineTo(i * w, h);
             }
